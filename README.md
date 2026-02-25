@@ -11,3 +11,17 @@ pkg install python
 pip install -r requirements.txt
 python metapurge.py
 ```
+
+# Acessando arquivos do Armazenamento Interno
+
+Execute:
+```bash
+termux-setup-storage
+```
+Permita o acesso do Termux ao seu armazenamento.
+
+### Pasta "Storage" é criada na Home
+Ela te dá acesso via Termux ao Shared (Pasta 'Local')
+Através dela você tem acesso às pastas comuns do seu armazenamento interno Android. (Android, DCIM, Download, etc.)
+
+Utilize **~/storage/shared/...** para indicar o caminho das pastas e arquvos.
