@@ -2,6 +2,7 @@ import os
 import sys
 import hashlib
 from PIL import Image
+from PIL.ExifTags import TAGS
 
 # ================== CORES ==================
 GREEN = "\033[92m"
@@ -77,15 +78,36 @@ def process_directory(path, recursive):
     print(f"{GREEN}Arquivos encontrados: {total}")
     print(f"Arquivos sanitizados: {success}{RESET}\n")
 
+def view_metadata(image_path):
+    try:
+        img = Image.open(image_path)
+        exif_data = img._getexif()
+
+        print(f"\n{PURPLE}Metadados encontrados:{RESET}\n")
+
+        if not exif_data:
+            print(f"{GREEN}Nenhum metadado EXIF encontrado.{RESET}\n")
+            return
+
+        for tag_id, value in exif_data.items():
+            tag = TAGS.get(tag_id, tag_id)
+            print(f"{CYAN}{tag}:{RESET} {value}")
+
+        print("\n")
+
+    except Exception as e:
+        print(f"{RED}[!] Erro ao visualizar metadados: {e}{RESET}\n") 
+
 # Menu
 
 def menu():
     while True:
         print(GREEN + "Escolha uma opção:\n" + RESET)
         print("[1] Limpar uma pasta específica")
-        print("[2] Limpar Metadados de todas as Subpastas")
-        print("[3] Limpar armazenamento Android (Exclui todos os metadados))\n")
-        print(RED + "[4] Sair\n")
+        print("[2] Limpar Metadados de todas as Subpastas (A partir de uma pasta raiz)")
+        print("[3] Limpar armazenamento Android (Exclui todos os metadados)")
+        print(PURPLE + "[4] Visualizar metadados de um arquivo\n")
+        print(RED + "[5] Sair\n")
 
         choice = input(PURPLE + ">>> " + RESET)
 
@@ -114,12 +136,18 @@ def menu():
                 print(RED + "Armazenamento não acessível.\n" + RESET)
 
         elif choice == "4":
+            path = input(GREEN + "Digite o caminho completo da imagem: " + RESET)
+            if os.path.isfile(path):
+                view_metadata(path)
+            else:
+                print(RED + "Arquivo inválido.\n" + RESET)
+
+        elif choice == "5":
             print(PURPLE + "Encerrando...\n" + RESET)
             sys.exit()
 
         else:
             print(RED + "Opção inválida.\n" + RESET)
-
 # Main
 
 if __name__ == "__main__":
